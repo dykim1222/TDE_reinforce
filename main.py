@@ -73,11 +73,32 @@ def main():
                         args.gamma, args.log_dir, args.add_timestep, device, True)
 
     frame_skip = 4          # frame skip
-    args.tb_dir = args.tb_dir + '/'
+    if args.tb_dir[-1] != '/':
+        args.tb_dir = args.tb_dir + '/'
     logger = Logger(args.tb_dir)
     logger.write_settings(args)
     if args.use_tdm:
-        func = lambda x : x**1  # bonus function depending on reachability
+
+        # beta scheduler
+        if args.beta_schedule == 'const':
+            beta_func = lambda x : float(args.beta_int)
+        elif args.beta_schedule == 'sqrt':
+            beta_func = lambda x : 1./np.sqrt(x)
+        elif args.beta_schedule == 'log':
+            beta_func = lambda x : 1./np.log(x)
+        elif args.beta_schedule == 'linear':
+            beta_func = lambda x : 1./x
+
+        # bonus function variations
+        if args.bonus_func == 'linear':
+            bonus_func = lambda x : x
+        elif args.bonus_func == 'square':
+            bonus_func = lambda x : x**2
+        elif args.bonus_func == 'sqrt':
+            bonus_func = lambda x : x**(1/2)
+        elif args.bonus_func == 'log':
+            bonus_func = lambda x : np.log(x)
+
 
         # temporal difference module
         tdm = TemporalDifferenceModule(inputSize= 2*int(envs.observation_space.shape[0]),
@@ -85,13 +106,13 @@ def main():
                                       num_fc_layers=int(args.num_layers),
                                       depth_fc_layers=int(args.fc_width),
                                       lr=float(args.opt_lr),
-                                      func=func,
                                       buffer_max_length = args.buffer_max_length,
                                       buffer_RL_ratio=args.buffer_RL_ratio,
                                       frame_skip=frame_skip,
                                       tdm_epoch=args.tdm_epoch,
                                       tdm_batchsize=args.tdm_batchsize,
-                                      logger=logger).to(device)
+                                      logger=logger,
+                                      bonus_func=bonus_func).to(device)
 
         #collect random trajectories
         sample_collector = CollectSamples(envs, args.num_processes, initial=True)
@@ -166,7 +187,7 @@ def main():
             #compute intrinsic bonus
             if args.use_tdm:
                 reward_int = tdm.compute_bonus(obs_old, obs).unsqueeze(1).float()
-                reward += float(args.beta_int) * reward_int.cpu()
+                reward += beta_func(step + j*num_steps) * reward_int.cpu()
 
                 if (j % args.log_interval == 0) and (step == args.num_steps-1):
                     logger.add_reward_intrinsic(reward_int, (j+1)*args.num_steps*args.num_processes)
@@ -227,7 +248,7 @@ def main():
                        np.min(episode_rewards),
                        np.max(episode_rewards), dist_entropy,
                        value_loss, action_loss))
-            logger.add_reward(episode_rewards, (j+1)*args.num_steps*args.num_processes, args.use_tdm)
+            logger.add_reward(episode_rewards, (j+1)*args.num_steps*args.num_processes)
 
         #
         # if j % args.tb_interval == 0:

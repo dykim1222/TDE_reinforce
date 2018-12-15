@@ -47,7 +47,7 @@ def get_args():
     #                     help='eval interval, one eval per n updates (default: None)')
     parser.add_argument('--vis-interval', type=int, default=100,
                         help='vis interval, one log per n updates (default: 100)')
-    parser.add_argument('--num-env-steps', type=int, default=1e7,
+    parser.add_argument('--num-env-steps', type=int, default=1e6,
                         help='number of environment steps to train (default: 1e6)')
     parser.add_argument('--env-name', default='PongNoFrameskip-v4',
                         help='environment to train on (default: PongNoFrameskip-v4)')
@@ -93,7 +93,7 @@ def get_args():
     # parser.add_argument('--optimizer', default='adam',
     #                     help='which optimizer to use')    # rmsprop?
     parser.add_argument('--beta_int', default=1/16,
-                        help='int reward param')
+                        help='int reward param initial value')
     parser.add_argument('--time_intervals', default=6,
                         help='how many time interval predictions')
     parser.add_argument('--buffer_RL_ratio', default=0.9,
@@ -108,6 +108,10 @@ def get_args():
                         help='num_rollout for buffer_rand')
     parser.add_argument('--steps_per_rollout', default=200,
                         help='steps for buffer_rand')
+    parser.add_argument('--beta_schedule', default='const',
+                        help='beta scheduler')
+    parser.add_argument('--bonus_func', default='linear',
+                        help='how to give bonus')
 
     '''
     ###################################################################

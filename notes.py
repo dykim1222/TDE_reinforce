@@ -11,13 +11,14 @@ ENVS:
 
 
 
-
-3. different rate for ratio?
-5. label maker/time_intervals?
+4. different schedule for beta?
 6. different bonus function?
+5. label maker/time_intervals?
+3. different rate for ratio?
+
 2. performance comparison over beta = 10^-k, k = -4, …, 1
 1. how many envs?
-4. different schedule for beta?
+
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 Exp schedule:
@@ -72,14 +73,50 @@ lr 1e-4
 params to try later:
 beta 1e-4, 1e-3
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 Exp schedule:
 12/15
-2. Param ablations:
+2. beta decaying schedule:
+with fixed :
+    nl 2
+    fc 300
+    lr 1e-4
+    tb_dir
+try:
+    beta_func = const, linear, log, sqrt
+    try: beta = 10**np.arange(-3,3)
+    # beta scheduler
+    if args.beta_schedule == 'const':
+        beta_func = lambda x : float(args.beta_int)
+    elif args.beta_schedule == 'sqrt':
+        beta_func = lambda x : 1./np.sqrt(x)
+    elif args.beta_schedule == 'log':
+        beta_func = lambda x : 1./np.log(x)
+    elif args.beta_schedule == 'linear':
+        beta_func = lambda x : 1./x
 
 
-params to try:
-beta = 1e-4, 1e-3
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Exp schdule:
+12/15
+3. different bonus function
+with fixed :
+    nl 2
+    fc 300
+    lr 1e-4
+    tb_dir
+try:
+    bonus = square, linear, log, sqrt
+    try: beta = 10**np.arange(-3,3)
+# bonus function variations
+if args.bonus_func == 'linear':
+    bonus_func = lambda x : x
+elif args.bonus_func == 'square':
+    bonus_func = lambda x : x**2
+elif args.bonus_func == 'sqrt':
+    bonus_func = lambda x : x**(1/2)
+elif args.bonus_func == 'log':
+    bonus_func = lambda x : np.log(x)
 
 
 
@@ -88,8 +125,7 @@ beta = 1e-4, 1e-3
 
 
 
-
-
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 '''
 
 

@@ -38,8 +38,8 @@ class layer_last(nn.Module):  # no ReLU in the last layer
 
 class TemporalDifferenceModule(nn.Module):
     def __init__(self, inputSize, outputSize, num_fc_layers, depth_fc_layers,
-                lr, func, buffer_max_length, buffer_RL_ratio, frame_skip,
-                tdm_epoch, tdm_batchsize, logger):
+                lr, buffer_max_length, buffer_RL_ratio, frame_skip,
+                tdm_epoch, tdm_batchsize, logger, bonus_func):
         super(TemporalDifferenceModule, self).__init__()
         self.time_intervals = outputSize
         self.num_fc_layers = num_fc_layers
@@ -50,7 +50,6 @@ class TemporalDifferenceModule(nn.Module):
         self.layer_last = layer_last(depth_fc_layers, outputSize).to(device)
         self.criterion = nn.BCEWithLogitsLoss().to(device)
         self.optimizer = optim.Adam(self.parameters(), lr=lr)
-        self.func = func
         self.buffer_rand = deque(maxlen=buffer_max_length)
         self.buffer_max_length = buffer_max_length
         self.buffer_RL_temp = deque(maxlen=buffer_max_length)
@@ -62,6 +61,7 @@ class TemporalDifferenceModule(nn.Module):
         self.frame_skip=frame_skip
         self.logger= logger
         self.epoch_count = 0
+        self.bonus_func = bonus_func
 
 
     def forward(self, input):
@@ -76,7 +76,7 @@ class TemporalDifferenceModule(nn.Module):
         input = torch.cat([obs_old, obs],dim=1)
         input = self.forward(input)
         input = torch.argmax(input, dim=1)
-        input = self.func(input)
+        input = self.bonus_func(input)
         return input.to(device)
 
     def label_maker(self, number):
@@ -269,21 +269,17 @@ class Logger(object):
         self.loss_tdm.append(loss.item())
         self.scalar_summary('loss', loss.item(), iter_count+1)
 
-    def add_reward(self, reward, iter_count, use_tdm):
+    def add_reward(self, reward, iter_count):
         self.mean.append(np.mean(reward))
         self.median.append(np.median(reward))
         self.std.append(np.std(reward))
         self.qtl.append(np.array([np.percentile(reward, 25),np.percentile(reward, 75)]))
-        if use_tdm:
-            self.scalar_summary('tdm_mean', self.mean[-1], iter_count+1)
-            # self.scalar_summary('tdm_median', self.median[-1], iter_count+1)
-            self.scalar_summary('tdm_std', self.std[-1], iter_count+1)
-            # self.scalar_summary('tdm_qtl', np.mean(self.qtl[-1]), iter_count+1)
-        else:
-            self.scalar_summary('mean', self.mean[-1], iter_count+1)
-            # self.scalar_summary('median', self.median[-1], iter_count+1)
-            self.scalar_summary('std', self.std[-1], iter_count+1)
-            # self.scalar_summary('qtl', np.mean(self.qtl[-1]), iter_count+1)
+
+        self.scalar_summary('tdm_mean', self.mean[-1], iter_count+1)
+        self.scalar_summary('tdm_median', self.median[-1], iter_count+1)
+        self.scalar_summary('tdm_std', self.std[-1], iter_count+1)
+        # self.scalar_summary('tdm_qtl', np.mean(self.qtl[-1]), iter_count+1)
+
 
     def add_reward_intrinsic(self, reward_int, iter_count):
         self.rw_int_mean.append(reward_int.squeeze().mean().item())
