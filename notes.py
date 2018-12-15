@@ -83,36 +83,17 @@ Exp schedule:
         tb_dir
     try:
         beta_func = const, linear, log, sqrt
+        bonus_func = linear, log, sqrt, square
         try: beta = 10**np.arange(-3,3)
-        # beta scheduler
-        if args.beta_schedule == 'const':
-            beta_func = lambda x : float(args.beta_int)
-        elif args.beta_schedule == 'sqrt':
-            beta_func = lambda x : 1./np.sqrt(x)
-        elif args.beta_schedule == 'log':
-            beta_func = lambda x : 1./np.log(x)
-        elif args.beta_schedule == 'linear':
-            beta_func = lambda x : 1./x
-
-        # bonus function variations
-        if args.bonus_func == 'linear':
-            bonus_func = lambda x : x
-        elif args.bonus_func == 'square':
-            bonus_func = lambda x : x**2
-        elif args.bonus_func == 'sqrt':
-            bonus_func = lambda x : x**(1/2)
-        elif args.bonus_func == 'log':
-            bonus_func = lambda x : np.log(x)
-
 '''
-
-# make 0 first
-import numpy as np
-betas = 10.0**np.arange(-3,3)
-bfs = ['const', 'sqrt', 'log', 'linear']
-bnfs = ['linear', 'square', 'log', 'sqrt']
-
-for beta in betas:
-    for bf in bfs:
-        for bnf in bnfs:
-            print("srun python main.py --env-name 'LunarLanderContinuous-v2' --use_tdm True --beta_int {} --num_layers 2 --fc_width 300 --opt_lr 1e-4 --beta_schedule {} --bonus_func {}".format(beta, bf, bnf))
+#
+# # make 0 first
+# import numpy as np
+# betas = 10.0**np.arange(-3,3)
+# bfs = ['const', 'sqrt', 'log', 'linear']
+# bnfs = ['linear', 'square', 'log', 'sqrt']
+#
+# for beta in betas:
+#     for bf in bfs:
+#         for bnf in bnfs:
+#             print("srun python main.py --env-name 'LunarLanderContinuous-v2' --use_tdm True --beta_int {} --num_layers 2 --fc_width 300 --opt_lr 1e-4 --beta_schedule {} --bonus_func {}".format(beta, bf, bnf))
