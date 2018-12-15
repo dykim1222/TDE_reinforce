@@ -104,7 +104,7 @@ def get_args():
                         help='tdm training batch size')
     parser.add_argument('--buffer_max_length', default=1000,
                         help='buffer_RL max length (not too big so that we get better trajectories.)')
-    parser.add_argument('--num_rollouts', default=40,
+    parser.add_argument('--num_rollouts', default=5,
                         help='num_rollout for buffer_rand')
     parser.add_argument('--steps_per_rollout', default=200,
                         help='steps for buffer_rand')

@@ -104,7 +104,7 @@ class TemporalDifferenceModule(nn.Module):
                 mask = raw[i][1][:,j]
 
                 if mask.sum().item() < raw[i][0].shape[0]: # if there is a break
-                    break_location = np.where(mask==0)[0]
+                    break_location = np.where(mask.cpu()==0)[0]
                     break_location = np.insert(break_location,0,0)
                     break_location = np.insert(break_location,len(break_location),len(break_location))
                     for k in range(len(break_location)-1):
