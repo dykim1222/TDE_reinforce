@@ -73,6 +73,7 @@ def main():
                         args.gamma, args.log_dir, args.add_timestep, device, True)
 
     frame_skip = 4          # frame skip
+    args.tb_dir = tb_dir + '/'
     logger = Logger(args.tb_dir)
     logger.write_settings(args)
     if args.use_tdm:
@@ -81,9 +82,9 @@ def main():
         # temporal difference module
         tdm = TemporalDifferenceModule(inputSize= 2*int(envs.observation_space.shape[0]),
                                       outputSize=args.time_intervals,
-                                      num_fc_layers=args.num_layers,
-                                      depth_fc_layers=args.fc_width,
-                                      lr=args.opt_lr,
+                                      num_fc_layers=int(args.num_layers),
+                                      depth_fc_layers=int(args.fc_width),
+                                      lr=int(args.opt_lr),
                                       func=func,
                                       buffer_max_length = args.buffer_max_length,
                                       buffer_RL_ratio=args.buffer_RL_ratio,
