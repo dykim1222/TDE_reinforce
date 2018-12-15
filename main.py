@@ -73,7 +73,7 @@ def main():
                         args.gamma, args.log_dir, args.add_timestep, device, True)
 
     frame_skip = 4          # frame skip
-    args.tb_dir = tb_dir + '/'
+    args.tb_dir = args.tb_dir + '/'
     logger = Logger(args.tb_dir)
     logger.write_settings(args)
     if args.use_tdm:
