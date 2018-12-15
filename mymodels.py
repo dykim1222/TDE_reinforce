@@ -61,7 +61,7 @@ class TemporalDifferenceModule(nn.Module):
         self.buffer_rand_clean = False
         self.frame_skip=frame_skip
         self.logger= logger
-        self.epoch_count = 1
+        self.epoch_count = 0
 
 
     def forward(self, input):
@@ -177,7 +177,7 @@ class TemporalDifferenceModule(nn.Module):
             loss.backward()
             nn.utils.clip_grad_norm_(self.parameters(), 40.0)
             self.optimizer.step()
-            logger.add_tdm_loss(loss, self.epoch_count*i)
+            self.logger.add_tdm_loss(loss, self.epoch_count*self.tdm_epoch + i)
         self.epoch_count += 1
         print('Optimization done.')
 
@@ -249,15 +249,16 @@ class Logger(object):
         self.median = []
         self.std = []
         self.qtl = []
-        self.rw_int = []
+        self.rw_int_mean = []
+        self.rw_int_std = []
 
     def write_settings(self, args):
-        with open(args.save_path+"experiment_settings.txt", "w") as f:
+        with open(self.log_dir+"experiment_settings.txt", "w") as f:
             for arg in vars(args):
                 param = str(arg)
                 value = getattr(args, arg)
-                f.write('Param: {:<20} Value: {:<10}\n'.format(param, value))
-                self.args[param] = value
+                f.write('Param: {:<25} Value: {:<10}\n'.format(param, value))
+                # self.args[param] = value
 
     def scalar_summary(self, tag, value, step):
         """Log a scalar variable."""
@@ -275,18 +276,21 @@ class Logger(object):
         self.qtl.append(np.array([np.percentile(reward, 25),np.percentile(reward, 75)]))
         if use_tdm:
             self.scalar_summary('tdm_mean', self.mean[-1], iter_count+1)
-            self.scalar_summary('tdm_median', self.median[-1], iter_count+1)
+            # self.scalar_summary('tdm_median', self.median[-1], iter_count+1)
             self.scalar_summary('tdm_std', self.std[-1], iter_count+1)
-            self.scalar_summary('tdm_qtl', np.mean(self.qtl[-1]), iter_count+1)
+            # self.scalar_summary('tdm_qtl', np.mean(self.qtl[-1]), iter_count+1)
         else:
             self.scalar_summary('mean', self.mean[-1], iter_count+1)
-            self.scalar_summary('median', self.median[-1], iter_count+1)
+            # self.scalar_summary('median', self.median[-1], iter_count+1)
             self.scalar_summary('std', self.std[-1], iter_count+1)
-            self.scalar_summary('qtl', np.mean(self.qtl[-1]), iter_count+1)
+            # self.scalar_summary('qtl', np.mean(self.qtl[-1]), iter_count+1)
 
     def add_reward_intrinsic(self, reward_int, iter_count):
-        self.rw_int.append(np.mean(reward_int.squeeze().item()))
-        self.scalar_summary('intrinsic_reward', self.rw_int[-1], iter_count+1)
+        self.rw_int_mean.append(reward_int.squeeze().mean().item())
+        self.rw_int_std.append(reward_int.squeeze().std().item())
+        self.scalar_summary('intrinsic_reward_mean', self.rw_int_mean[-1], iter_count+1)
+        self.scalar_summary('intrinsic_reward_std', self.rw_int_std[-1], iter_count+1)
+
 
     def save(self):
         filename = 'results'
@@ -297,10 +301,9 @@ class Logger(object):
                  median = np.array(self.median),
                  std = np.array(self.std),
                  qtl = np.array(self.qtl),
-                 rw_int= np.array(self.rw_int))
+                 rw_int_mean = np.array(self.rw_int_mean),
+                 rw_int_std = np.array(self.rw_int_std))
         print('Results Saved.')
-
-
 
 
 if __name__ == "__main__":

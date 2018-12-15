@@ -25,16 +25,15 @@ python main.py --env-name "LunarLanderContinuous-v2" --algo ppo --use-gae --lr 2
 7. time interval?
 
 
-
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 Exp schedule:
 12/14
 1. param ablations:
-'--tb_dir'
 
+'--tb_dir'
 
 '--beta_int': -3,-2,-1,0
 '--num_layers': 1,2
 '--fc_width': 200, 300
 '--opt_lr': 2  1e-3, 1e-4
-
 '''
