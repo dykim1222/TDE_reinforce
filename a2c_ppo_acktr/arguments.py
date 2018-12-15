@@ -4,10 +4,11 @@ import torch
 
 # args.num_env_steps) // args.num_steps // args.num_processes
 def get_args():
+
     parser = argparse.ArgumentParser(description='RL')
-    parser.add_argument('--algo', default='a2c',
+    parser.add_argument('--algo', default='ppo',
                         help='algorithm to use: a2c | ppo | acktr')
-    parser.add_argument('--lr', type=float, default=7e-4,
+    parser.add_argument('--lr', type=float, default=2.5e-4,
                         help='learning rate (default: 7e-4)')
     parser.add_argument('--eps', type=float, default=1e-5,
                         help='RMSprop optimizer epsilon (default: 1e-5)')
@@ -29,23 +30,23 @@ def get_args():
                         help='random seed (default: 1)')
     parser.add_argument('--cuda-deterministic', action='store_true', default=False,
                         help="sets flags for determinism when using CUDA (potentially slow!)")
-    parser.add_argument('--num-processes', type=int, default=16,
+    parser.add_argument('--num-processes', type=int, default=8,
                         help='how many training CPU processes to use (default: 16)')
-    parser.add_argument('--num-steps', type=int, default=5,
+    parser.add_argument('--num-steps', type=int, default=128,
                         help='number of forward steps in A2C (default: 5)')
     parser.add_argument('--ppo-epoch', type=int, default=4,
                         help='number of ppo epochs (default: 4)')
-    parser.add_argument('--num-mini-batch', type=int, default=32,
+    parser.add_argument('--num-mini-batch', type=int, default=4,
                         help='number of batches for ppo (default: 32)')
-    parser.add_argument('--clip-param', type=float, default=0.2,
+    parser.add_argument('--clip-param', type=float, default=0.1,
                         help='ppo clip parameter (default: 0.2)')
-    parser.add_argument('--log-interval', type=int, default=10,
+    parser.add_argument('--log-interval', type=int, default=1,
                         help='log interval, one log per n updates (default: 10)')
     parser.add_argument('--save-interval', type=int, default=100,
                         help='save interval, one save per n updates (default: 100)')
     # parser.add_argument('--eval-interval', type=int, default=None,
     #                     help='eval interval, one eval per n updates (default: None)')
-    parser.add_argument('--vis-interval', type=int, default=100,
+    parser.add_argument('--vis-interval', type=int, default=1,
                         help='vis interval, one log per n updates (default: 100)')
     parser.add_argument('--num-env-steps', type=int, default=1e6,
                         help='number of environment steps to train (default: 1e6)')
@@ -84,9 +85,9 @@ def get_args():
 
     # parser.add_argument('--tb_interval', default=100,
     #                     help='logging interval for tensorboard')
-    parser.add_argument('--num_layers', default=1,
+    parser.add_argument('--num_layers', default=2,
                         help='num layers for tdm')
-    parser.add_argument('--fc_width', default=200,
+    parser.add_argument('--fc_width', default=300,
                         help='width of hid layer of tdm')
     parser.add_argument('--opt_lr', default=1e-4,
                         help='optimizer lr for tdm')
