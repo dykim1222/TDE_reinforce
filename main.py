@@ -38,7 +38,7 @@ if args.cuda and torch.cuda.is_available() and args.cuda_deterministic:
     torch.backends.cudnn.deterministic = True
 
 try:
-    os.makedirs(args.log_dir)
+    os.makedirs(args.log_dir, exist_ok=True)
 except OSError:
     files = glob.glob(os.path.join(args.log_dir, '*.monitor.csv'))
     for f in files:
@@ -167,7 +167,7 @@ def main():
             if args.use_tdm:
                 reward_int = tdm.compute_bonus(obs_old, obs).unsqueeze(1).float()
                 reward += float(args.beta_int) * reward_int.cpu()
-                
+
                 if (j % args.log_interval == 0) and (step == args.num_steps-1):
                     logger.add_reward_intrinsic(reward_int, (j+1)*args.num_steps*args.num_processes)
 
