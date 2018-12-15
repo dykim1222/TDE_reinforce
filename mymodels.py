@@ -77,7 +77,7 @@ class TemporalDifferenceModule(nn.Module):
         input = self.forward(input)
         input = torch.argmax(input, dim=1)
         input = self.func(input)
-        return input
+        return input.to(device)
 
     def label_maker(self, number):
         label = torch.zeros(self.time_intervals)
