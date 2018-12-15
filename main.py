@@ -84,7 +84,7 @@ def main():
                                       outputSize=args.time_intervals,
                                       num_fc_layers=int(args.num_layers),
                                       depth_fc_layers=int(args.fc_width),
-                                      lr=int(args.opt_lr),
+                                      lr=float(args.opt_lr),
                                       func=func,
                                       buffer_max_length = args.buffer_max_length,
                                       buffer_RL_ratio=args.buffer_RL_ratio,
