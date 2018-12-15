@@ -209,7 +209,7 @@ class CollectSamples(object):
                 obs = obs.unsqueeze(0)
                 traj = torch.cat((traj,obs))
                 indic = (torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])).unsqueeze(0)
-                mask = torch.cat((mask,indic))
+                mask = torch.cat((mask.to(device),indic.to(device)))
                 if (done.sum()==self.num_processes) or  (step == steps_per_rollout-1):
                     if rollout_number%5==0:
                         print("Trajectory {:2}/{:2} collected.".format(rollout_number,num_rollouts))
