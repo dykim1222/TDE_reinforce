@@ -85,7 +85,7 @@ def main():
         elif args.beta_schedule == 'sqrt':
             beta_func = lambda x : 1./np.sqrt(x+1)
         elif args.beta_schedule == 'log':
-            beta_func = lambda x : 1./np.log(x+1)
+            beta_func = lambda x : 1./np.log(x+2)
         elif args.beta_schedule == 'linear':
             beta_func = lambda x : 1./(x+1)
 
