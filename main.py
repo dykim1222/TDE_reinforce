@@ -91,13 +91,13 @@ def main():
 
         # bonus function variations
         if args.bonus_func == 'linear':
-            bonus_func = lambda x : x
+            bonus_func = lambda x : x+1
         elif args.bonus_func == 'square':
-            bonus_func = lambda x : x**2
+            bonus_func = lambda x : (x+1)**2
         elif args.bonus_func == 'sqrt':
-            bonus_func = lambda x : x**(1/2)
+            bonus_func = lambda x : (x+1)**(1/2)
         elif args.bonus_func == 'log':
-            bonus_func = lambda x : np.log(x)
+            bonus_func = lambda x : np.log(x+1)
 
 
         # temporal difference module

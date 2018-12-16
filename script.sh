@@ -12,6 +12,9 @@ for beta in 0.001 0.01 0.1 1.0 10.0 100.0; do
       cd mlproject
       echo "srun python main.py --env-name 'BipedalWalker-v2' --use_tdm True --beta_int ${beta} --num_layers 2 --fc_width 300 --opt_lr 1e-4 --beta_schedule ${bf} --bonus_func ${bnf}" >> sb.s
       sbatch sb.s
-      cd ~/code/tmd/12_15_func
+      cd ~/code/tmd/12_15_bipedal
       count=$((count+1))
 done; done; done;
+
+
+# changed last cd?
