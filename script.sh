@@ -16,5 +16,5 @@ for beta in 0.001 0.01 0.1 1.0 10.0 100.0; do
       count=$((count+1))
 done; done; done;
 
-
 # changed last cd?
+# run 0 no_tdm?
