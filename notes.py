@@ -85,6 +85,14 @@ Exp schedule:
         beta_func = const, linear, log, sqrt
         bonus_func = linear, log, sqrt, square
         try: beta = 10**np.arange(-3,3)
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Exp Schedule:
+12/15
+3. Harder Env: BipedalWalker-v2
+param search same as #2
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 '''
 #
 # # make 0 first
