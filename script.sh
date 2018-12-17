@@ -1,9 +1,22 @@
 #!/bin/bash
 
+
+
+mkdir 0
+cp sb.s 0
+cd 0
+git clone https://github.com/dykim1222/mlproject.git
+cp sb.s mlproject
+cd mlproject
+echo "srun python main.py --env-name 'BipedalWalkerHardcore-v2'" >> sb.s
+sbatch sb.s
+cd /home/kimdy/code/tmd/12_17_bipedalhardcore
+
 count=1
 for beta in 0.001 0.01 0.1 1.0 10.0 100.0; do
   for bf in "const" "sqrt" "log" "linear"; do
     for bnf in "square" "sqrt" "log" "linear"; do
+
       mkdir $count
       cp sb.s $count
       cd $count
@@ -16,5 +29,4 @@ for beta in 0.001 0.01 0.1 1.0 10.0 100.0; do
       count=$((count+1))
 done; done; done;
 
-# changed last cd?
-# run 0 no_tdm?
+# changed last cd? twice!

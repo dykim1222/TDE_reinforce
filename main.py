@@ -187,8 +187,8 @@ def main():
             #compute intrinsic bonus
             if args.use_tdm:
                 tdm.symm_eval = True if step == args.num_steps-1 else False
-                reward_int = tdm.compute_bonus(obs_old, obs)
-                reward += beta_func(step + j*args.num_steps) * reward_int.cpu().unsqueeze(1).float()
+                reward_int = tdm.compute_bonus(obs_old, obs).float()
+                reward += beta_func(step + j*args.num_steps) * reward_int.cpu().unsqueeze(1)
 
                 if (j % args.log_interval == 0) and (step == args.num_steps-1):
                     logger.add_reward_intrinsic(reward_int, (j+1)*args.num_steps*args.num_processes)
