@@ -63,6 +63,7 @@ class TemporalDifferenceModule(nn.Module):
         self.epoch_count = 0
         self.bonus_func = bonus_func
         self.symm_eval = False
+        self.symm_eval_count = 0
 
 
     def forward(self, input):
@@ -72,7 +73,7 @@ class TemporalDifferenceModule(nn.Module):
         out = self.layer_last(cur)
         return out
 
-    def compute_bonus(self, obs_old, obs, iter_count):
+    def compute_bonus(self, obs_old, obs):
         # compute intrinsic reward
         input = torch.cat([obs_old, obs],dim=1)
         input = self.forward(input)
@@ -83,9 +84,10 @@ class TemporalDifferenceModule(nn.Module):
             symm = self.forward(symm)
             symm = torch.argmax(symm, dim=1)
             delta = torch.abs(symm-input)
-            val = (delta/torch.abs(input) + delta/torch.abs(symm))/2
+            val = (delta/(torch.abs(input)+1) + delta/(torch.abs(symm)+1))/2
             val = torch.mean(val.float())
-            self.logger.add_symm_eval(val, iter_count)
+            self.logger.add_symm_eval(val, self.symm_eval_count)
+            self.symm_eval_count += 1
 
         input = self.bonus_func(input)
         return input.to(device)

@@ -187,7 +187,7 @@ def main():
             #compute intrinsic bonus
             if args.use_tdm:
                 tdm.symm_eval = True if step == args.num_steps-1 else False
-                reward_int = tdm.compute_bonus(obs_old, obs, (j+1)*args.num_steps*args.num_processes).unsqueeze(1).float()
+                reward_int = tdm.compute_bonus(obs_old, obs)
                 reward += beta_func(step + j*args.num_steps) * reward_int.cpu()
 
                 if (j % args.log_interval == 0) and (step == args.num_steps-1):
@@ -235,10 +235,12 @@ def main():
                           getattr(get_vec_normalize(envs), 'ob_rms', None)]
 
             if j == num_updates - 1:
-                save_here = os.path.join(save_path, args.env_name + "_step_{}M.pt".format((j+1)*args.num_steps*args.num_processes)//1e6))
+                save_here = os.path.join(save_path, args.env_name + "_step_{}M.pt".format((j+1)*args.num_steps*args.num_processes//1e6))
             else:
                 save_here = os.path.join(save_path, args.env_name + "_final.pt")
             torch.save(save_model, save_here) # saved policy.
+
+
 
         total_num_steps = (j + 1) * args.num_processes * args.num_steps
 
