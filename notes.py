@@ -91,8 +91,11 @@ Exp Schedule:
 12/15
 3. Harder Env: BipedalWalker-v2
 param search same as #2
-
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Exp Schedule:
+12/17
+4. Not really trying new but trying to check whether we are really learning the metric: i.e. to check symmetricity
+To do so: I will compute k-many more graphs: for each time prediction interval compute 1/2 * (|f(s,s') - f(s',s)|/|f(s,s')| + |f(s,s') - f(s',s)|/|f(s',s)|)
 '''
 #
 # # make 0 first

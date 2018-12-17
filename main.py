@@ -186,7 +186,8 @@ def main():
 
             #compute intrinsic bonus
             if args.use_tdm:
-                reward_int = tdm.compute_bonus(obs_old, obs).unsqueeze(1).float()
+                tdm.symm_eval = True if step == args.num_steps-1 else False
+                reward_int = tdm.compute_bonus(obs_old, obs, (j+1)*args.num_steps*args.num_processes).unsqueeze(1).float()
                 reward += beta_func(step + j*args.num_steps) * reward_int.cpu()
 
                 if (j % args.log_interval == 0) and (step == args.num_steps-1):
@@ -216,7 +217,9 @@ def main():
 
 
         # save for every interval-th episode or for the last epoch
-        if (j % args.save_interval == 0 or j == num_updates - 1) and args.save_dir != "":
+        # no
+        # save every 1-million steps
+        if (((j+1)*args.num_steps*args.num_processes)%1e6 == 0 or j == num_updates - 1) and args.save_dir != "":
             save_path = os.path.join(args.save_dir, args.algo)
             try:
                 os.makedirs(save_path)
@@ -231,7 +234,11 @@ def main():
             save_model = [save_model,
                           getattr(get_vec_normalize(envs), 'ob_rms', None)]
 
-            torch.save(save_model, os.path.join(save_path, args.env_name + ".pt"))
+            if j == num_updates - 1:
+                save_here = os.path.join(save_path, args.env_name + "_step_{}M.pt".format((j+1)*args.num_steps*args.num_processes)//1e6))
+            else:
+                save_here = os.path.join(save_path, args.env_name + "_final.pt")
+            torch.save(save_model, save_here) # saved policy.
 
         total_num_steps = (j + 1) * args.num_processes * args.num_steps
 

@@ -62,6 +62,7 @@ class TemporalDifferenceModule(nn.Module):
         self.logger= logger
         self.epoch_count = 0
         self.bonus_func = bonus_func
+        self.symm_eval = False
 
 
     def forward(self, input):
@@ -71,11 +72,21 @@ class TemporalDifferenceModule(nn.Module):
         out = self.layer_last(cur)
         return out
 
-    def compute_bonus(self, obs_old, obs):
+    def compute_bonus(self, obs_old, obs, iter_count):
         # compute intrinsic reward
         input = torch.cat([obs_old, obs],dim=1)
         input = self.forward(input)
         input = torch.argmax(input, dim=1)
+
+        if self.symm_eval: # to check symmetricity
+            symm = torch.cat([obs, obs_old], dim=1)
+            symm = self.forward(symm)
+            symm = torch.argmax(symm, dim=1)
+            delta = torch.abs(symm-input)
+            val = (delta/torch.abs(input) + delta/torch.abs(symm))/2
+            val = torch.mean(val.float())
+            self.logger.add_symm_eval(val, iter_count)
+
         input = self.bonus_func(input)
         return input.to(device)
 
@@ -251,6 +262,7 @@ class Logger(object):
         self.qtl = []
         self.rw_int_mean = []
         self.rw_int_std = []
+        self.symm_eval=[]
 
     def write_settings(self, args):
         with open(self.log_dir+"experiment_settings.txt", "w") as f:
@@ -287,6 +299,9 @@ class Logger(object):
         self.scalar_summary('intrinsic_reward_mean', self.rw_int_mean[-1], iter_count+1)
         self.scalar_summary('intrinsic_reward_std', self.rw_int_std[-1], iter_count+1)
 
+    def add_symm_eval(self, val, iter_count):
+        self.symm_eval.append(val.item())
+        self.scalar_summary('symmetricity', val.item(), iter_count+1)
 
     def save(self):
         filename = 'results'
@@ -298,7 +313,9 @@ class Logger(object):
                  std = np.array(self.std),
                  qtl = np.array(self.qtl),
                  rw_int_mean = np.array(self.rw_int_mean),
-                 rw_int_std = np.array(self.rw_int_std))
+                 rw_int_std = np.array(self.rw_int_std),
+                 symm_eval = np.array(self.symm_eval)
+                 )
         print('Results Saved.')
 
 
