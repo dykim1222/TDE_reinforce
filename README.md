@@ -5,8 +5,8 @@
 PPO implementation code imported from [PyTorch PPO](https://github.com/ikostrikov/pytorch-a2c-ppo-acktr).
 
 My modificatinos/writings are only in: 
-  - main.py
-  - mymodels.py
+  - 'main.py'
+  - 'mymodels.py'
   - notes.py
   - script.sh
   
