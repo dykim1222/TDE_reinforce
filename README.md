@@ -5,10 +5,11 @@
 ### PPO implementation code imported from [PyTorch PPO](https://github.com/ikostrikov/pytorch-a2c-ppo-acktr).
 
 ### My modifications/writings are only in: 
+  - `README.md`
   - `main.py`
   - `mymodels.py`
-  - notes.py
-  - script.sh
+  - `plottheresults.py`
+  - `./a2c_ppo_acktr/arguments.py`
   
   
 ### Requirements:
