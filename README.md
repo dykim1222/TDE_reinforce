@@ -10,6 +10,7 @@
   - `mymodels.py`
   - `plottheresults.py`
   - `./a2c_ppo_acktr/arguments.py`
+  - `./plots/rewardbp.py`
   
   
 ### Requirements:
