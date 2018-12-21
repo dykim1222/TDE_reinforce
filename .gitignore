@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# for me
+notes.py
+script.sh
+
 # Distribution / packaging
 .Python
 build/

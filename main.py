@@ -83,11 +83,11 @@ def main():
         if args.beta_schedule == 'const':
             beta_func = lambda x : float(args.beta_int)
         elif args.beta_schedule == 'sqrt':
-            beta_func = lambda x : 1./np.sqrt(x+1)
+            beta_func = lambda x : 1./np.sqrt(x+2)
         elif args.beta_schedule == 'log':
             beta_func = lambda x : 1./np.log(x+2)
         elif args.beta_schedule == 'linear':
-            beta_func = lambda x : 1./(x+1)
+            beta_func = lambda x : 1./(x+2)
 
         # bonus function variations
         if args.bonus_func == 'linear':
