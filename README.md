@@ -2,7 +2,7 @@
 
 ## Foundations of Machine Learning 2018 Project by Dae Young Kim
 
-### PPO implementation code imported from [PyTorch PPO](https://github.com/ikostrikov/pytorch-a2c-ppo-acktr).
+### PPO implementation code in PyTorch imported from [PyTorch PPO](https://github.com/ikostrikov/pytorch-a2c-ppo-acktr).
 
 ### My modifications/writings are only in: 
   - `README.md`
