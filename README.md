@@ -23,3 +23,7 @@
 ```
 python main.py --env-name 'BipedalWalkerHardcore-v2' --use_tdm True --beta_int 10.0 --num_layers 2 --fc_width 300 --opt_lr 1e-4 --beta_schedule linear --bonus_func log
 ```
+
+### Plots:
+![rewardbipedalworkerhardcore](https://github.com/dykim1222/mlproject/blob/master/plots/rewardbp.png)
+
