@@ -15,6 +15,7 @@ Requirements:
   - PyTorch
   - TensorFlow
   - [Open AI Gym](https://github.com/openai/gym)
+  - pybullet
   
 
 To run:
